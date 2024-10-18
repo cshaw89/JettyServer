@@ -1,0 +1,104 @@
+package org.example;
+
+
+
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.websocket.servlet.WebSocketServlet;
+import org.slf4j.Logger;
+
+
+import org.eclipse.jetty.server.Connector;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.ServerConnector;
+import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+import org.eclipse.jetty.server.handler.HandlerCollection;
+import org.eclipse.jetty.webapp.WebAppContext;
+import org.eclipse.jetty.websocket.server.WebSocketHandler;
+import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
+import org.slf4j.LoggerFactory;
+
+
+
+public class Jetty {
+
+
+    public int port;
+    public String contextPath;
+    private Server server;
+    private static final Logger LOG = LoggerFactory.getLogger(Jetty.class);
+
+
+    public Jetty(int port, String contextPath) {
+        this.port = port;
+        this.contextPath = contextPath;
+
+
+    }
+
+    public void runJetty() {
+        server = new Server();
+        ServerConnector connector = new ServerConnector(server);
+        connector.setPort(port);
+        server.setConnectors(new Connector[]{connector});
+
+
+//    WebSocketHandler wsHandler = new WebSocketHandler(){
+//        @Override
+//        public void configure(WebSocketServletFactory factory ) {
+//            factory.register(PositionSocket.class);
+//            LOG.info("Websocket handler registered for path: /{}", contextPath);
+//        }
+//
+//    };
+
+        WebAppContext wc = new WebAppContext();
+        wc.setContextPath("/" + contextPath);
+        wc.setWar("C:\\jetty-base\\webapps");
+
+        ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+        servletContextHandler.setContextPath("/" + contextPath);
+        servletContextHandler.addEventListener(new WebSocketConfig());
+
+      //  ServletContextHandler positionData = new ServletContextHandler(ServletContextHandler.SESSIONS);
+     //   positionData.setContextPath("/" + "PositionData");
+     //   positionData.addServlet(Servlet.class, "/*");
+
+
+
+
+        servletContextHandler.addServlet(new ServletHolder(new WebSocketServlet() {
+            @Override
+            public void configure(WebSocketServletFactory factory) {
+                factory.register(PositionSocket.class);
+            }
+        }), "/ws");
+
+
+        ContextHandlerCollection contexts = new ContextHandlerCollection();
+        contexts.addHandler(wc);
+        contexts.addHandler(servletContextHandler);
+        contexts.addHandler(positionData);
+
+        HandlerCollection handlers = new HandlerCollection();
+        handlers.setHandlers(new Handler[]{contexts, servletContextHandler});
+
+        server.setHandler(handlers);
+
+    }
+
+
+    public void startJettyService() {
+        try {
+            server.start();
+            LOG.info("Jetty server started on port " + port + " ");
+            server.join();
+        } catch (Exception ex) {
+            LOG.warn("Jetty error: ", ex);
+        }
+    }
+
+
+}
+
