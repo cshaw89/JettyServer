@@ -61,9 +61,9 @@ public class Jetty {
         servletContextHandler.setContextPath("/" + contextPath);
         servletContextHandler.addEventListener(new WebSocketConfig());
 
-      //  ServletContextHandler positionData = new ServletContextHandler(ServletContextHandler.SESSIONS);
-     //   positionData.setContextPath("/" + "PositionData");
-     //   positionData.addServlet(Servlet.class, "/*");
+       ServletContextHandler positionData = new ServletContextHandler(ServletContextHandler.SESSIONS);
+       positionData.setContextPath("/" + "PositionData");
+       positionData.addServlet(Servlet.class, "/*");
 
 
 
