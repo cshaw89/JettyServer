@@ -1,0 +1,17 @@
+package org.example;
+
+public class Main {
+
+
+
+    public static void main(String[] args) {
+
+  
+
+        Jetty jettyservice = new Jetty(8088, "TestingHere");
+        jettyservice.runJetty();
+        jettyservice.startJettyService();
+
+    }
+
+}
