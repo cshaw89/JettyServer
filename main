@@ -6,7 +6,12 @@ public class Main {
 
     public static void main(String[] args) {
 
-  
+        ThreadJetty testThread = new ThreadJetty(1.1, 1.1, 5);
+   //     testThread.start();
+        ThreadSquare testThreadSquare = new ThreadSquare();
+        testThreadSquare.start();
+      //  testThreadSquare.generateLat();
+     //   testThreadSquare.generateLong();
 
         Jetty jettyservice = new Jetty(8088, "TestingHere");
         jettyservice.runJetty();
