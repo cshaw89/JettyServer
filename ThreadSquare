@@ -1,0 +1,55 @@
+package org.example;
+
+
+import org.w3c.dom.ls.LSOutput;
+
+import java.sql.SQLOutput;
+import java.util.Random;
+
+public class ThreadSquare extends Thread {
+
+    double MIN_Latitude = 24.396308;
+    double MAX_Latitude = 49.384358;
+    double MIN_Longitude = -125.000000;
+    double MAX_Longitude = -66.934570;
+
+    public double generateLat() {
+        Random r = new Random();
+
+
+        return MIN_Latitude + r.nextDouble() * (MAX_Latitude - MIN_Latitude);
+
+    }
+    public double generateLong() {
+        Random r = new Random();
+
+        return MIN_Longitude + r.nextDouble() * (MAX_Longitude - MIN_Longitude);
+    }
+
+    double lat = generateLat();
+    double lon = generateLong();
+    double rightLat = generateRightLat(lat);
+    double southLon = generateSouthLon(lon);
+
+    public void run() {
+        System.out.println("thread has started");
+        System.out.println("Here are your new positional coordinates " + lat + ",  " + lon + "");
+        System.out.println("Here are your new positional coordinates based on the random set location " + rightLat + ",  " + southLon + "");
+        System.out.println("All listed Coordinates are in degrees: " + lat + ",  " + lon + "   " + rightLat + ",  " + southLon + "");
+    }
+
+
+    public double generateRightLat(double lat) {
+        double latOffset = 1.45;
+       double rightLat = lat + latOffset;;
+        return rightLat;
+    }
+
+    public double generateSouthLon(double lon) {
+        double lonOffset = 1.82;
+      double  southLon = lon + lonOffset;;
+        return southLon;
+    }
+
+
+}
